@@ -645,8 +645,15 @@ def test_unsupported_responses_options(option, value):
 
 def test_format_pricing_skips_non_numeric_values():
     # 'overrides' key on some OpenRouter models holds a list, not a numeric string
-    pricing = {"prompt": "0.000001", "completion": "0.000002", "overrides": [{"key": "val"}]}
+    pricing = {
+        "prompt": "0.000001",
+        "completion": "0.000002",
+        "overrides": [{"min_prompt_tokens": 272000, "prompt": "0.00002"}],
+        "unparseable": "auto",
+        "missing": None,
+        "flag": True,
+        "non_finite": "nan",
+        "infinite": "inf",
+    }
     result = format_pricing(pricing)
-    assert "overrides" not in result
-    assert "prompt" in result
-    assert "completion" in result
+    assert result == "prompt $1/M, completion $2/M"

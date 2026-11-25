@@ -1,4 +1,5 @@
 import json
+import math
 import time
 from copy import deepcopy
 from functools import cache
@@ -869,11 +870,14 @@ def register_commands(cli):
 
 def format_price(key, price_str):
     """Format a price value with appropriate scaling and no trailing zeros."""
-    if not isinstance(price_str, (str, int, float)):
+    if isinstance(price_str, bool):
         return None
-    price = float(price_str)
+    try:
+        price = float(price_str)
+    except (TypeError, ValueError):
+        return None
 
-    if price == 0:
+    if not math.isfinite(price) or price == 0:
         return None
 
     # Determine scale based on magnitude
